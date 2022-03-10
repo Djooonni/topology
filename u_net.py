@@ -16,11 +16,11 @@ class Unet_Model(Model):
         feature=min_feature
         
         self.train_loss = tf.keras.metrics.Mean(name='train_loss')
-        self.train_accuracy = tf.keras.metrics.MeanSquaredError(name='train_accuracy')
+        self.train_accuracy = tf.keras.metrics.BinaryAccuracy(name='train_accuracy')
         self.train_IoU_accuracy = tf.keras.metrics.MeanIoU(num_classes=2,name='IoU')
 
         self.test_loss = tf.keras.metrics.Mean(name='test_loss')
-        self.test_accuracy = tf.keras.metrics.MeanSquaredError(name='test_accuracy')
+        self.test_accuracy = tf.keras.metrics.BinaryAccuracy(name='test_accuracy')
         self.test_IoU_accuracy = tf.keras.metrics.MeanIoU(num_classes=2,name='IoU')
 
         self.loss_object = tf.keras.losses.LogCosh()
@@ -105,10 +105,10 @@ class Unet_Model(Model):
         self.test_IoU_accuracy(labels, predictions)
 
         
-    def train(self,X_np_5, y_np,EPOCHS=10):
-        self.train_ds = tf.data.Dataset.from_tensor_slices((X_np_5, y_np)).shuffle(10000).batch(32)
+    def train(self,X_np_5, y_np,EPOCHS=10,batch_size=32):
+        self.train_ds = tf.data.Dataset.from_tensor_slices((X_np_5, y_np)).shuffle(10000).batch(batch_size)
 
-        self.test_ds = tf.data.Dataset.from_tensor_slices((X_np_5, y_np)).batch(32)
+        self.test_ds = tf.data.Dataset.from_tensor_slices((X_np_5, y_np)).batch(batch_size)
         
         for epoch in range(EPOCHS):
             # Reset the metrics at the start of the next epoch
